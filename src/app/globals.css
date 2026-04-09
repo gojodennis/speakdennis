@@ -1,0 +1,467 @@
+/* ─── Design Tokens ─────────────────────────────────────────────────────────── */
+/* Fonts are loaded via Next.js next/font/google in layout.tsx */
+:root {
+  /* Brand colors - Cozy Warm Palette */
+  --color-bg:           #faf8ef;
+  --color-bg-elevated:  #ffffff;
+  --color-bg-glass:     rgba(255, 255, 255, 0.7);
+  --color-bg-glass-heavy: rgba(255, 255, 255, 0.9);
+  --color-surface:      #ffffff;
+  --color-border:       rgba(46, 31, 39, 0.05); /* 2e1f27 tint */
+  --color-border-hover: rgba(46, 31, 39, 0.1);
+
+  /* Primary — Orange */
+  --color-primary:      #dd7230;
+  --color-primary-glow: rgba(221, 114, 48, 0.25);
+  --color-primary-dim:  rgba(221, 114, 48, 0.12);
+
+  /* Accent — Yellow/Gold */
+  --color-accent:       #f4c95d;
+  --color-accent-glow:  rgba(244, 201, 93, 0.3);
+  --color-accent-dim:   rgba(244, 201, 93, 0.2);
+
+  /* Secondary — Pale Yellow */
+  --color-secondary:    #e7e393;
+  --color-secondary-dim:rgba(231, 227, 147, 0.3);
+
+  /* Tertiary — Warm Brown */
+  --color-tertiary:     #854d27;
+  --color-tertiary-dim: rgba(133, 77, 39, 0.1);
+
+  /* Semantic */
+  --color-success:      #10b981;
+  --color-warning:      #f59e0b;
+  --color-error:        #ef4444;
+
+  /* Text */
+  --color-text:         #2e1f27;
+  --color-text-muted:   #854d27; /* Brown text for muting */
+  --color-text-subtle:  rgba(46, 31, 39, 0.55);
+  --color-text-on-dark: #ffffff;
+
+  /* Typography — CSS vars injected by Next.js next/font/google in layout.tsx */
+  --font-body:    var(--font-inter, 'Inter', system-ui, sans-serif);
+  --font-heading: var(--font-outfit, 'Outfit', system-ui, sans-serif);
+
+  /* Spacing scale */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Radius - Ultra rounded for cozy feel */
+  --radius-sm:   0.75rem;
+  --radius-md:   1rem;
+  --radius-lg:   1.5rem;
+  --radius-xl:   2rem;
+  --radius-2xl:  2.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows - Deep, soft, diffused — warm-tinted for palette cohesion */
+  --shadow-sm:      0 8px 24px rgba(46, 31, 39, 0.06);
+  --shadow-md:      0 12px 32px rgba(46, 31, 39, 0.10);
+  --shadow-lg:      0 24px 48px rgba(46, 31, 39, 0.13);
+  --shadow-raised:  0 32px 64px -12px rgba(46, 31, 39, 0.16);
+  --shadow-primary: 0 12px 24px var(--color-primary-glow);
+
+  /* Transitions — all use expo-out for natural deceleration */
+  --transition-fast:   150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow:   600ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 450ms cubic-bezier(0.16, 1, 0.3, 1); /* replaces old bounce */
+}
+
+/* ─── Reset & Base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+html {
+  /* Use data-scroll-behavior to satisfy Next.js view-transition requirement */
+  -webkit-text-size-adjust: 100%;
+  background: #eef0f7;
+}
+
+/* Only smooth-scroll for anchor links, not page navigations */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-scroll-behavior]) {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Mobile: narrow pill wrapper */
+@media (max-width: 1023px) {
+  body {
+    margin: 0 auto;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0,0,0,0.04);
+  }
+}
+
+@media (max-width: 500px) {
+  body {
+    max-width: 100%;
+    box-shadow: none;
+  }
+}
+
+/* Desktop: full bleed, sidebar layout handled in component */
+@media (min-width: 1024px) {
+  body {
+    max-width: 100%;
+    box-shadow: none;
+    background: #eef0f7;
+  }
+}
+
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--color-primary-glow);
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+h1 { font-size: clamp(2rem, 8vw, 2.5rem); }
+h2 { font-size: clamp(1.5rem, 6vw, 1.75rem); }
+h3 { font-size: clamp(1.25rem, 5vw, 1.5rem); letter-spacing: -0.02em; }
+h4 { font-size: 1.125rem; font-weight: 600; }
+
+p {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* ─── Utilities ───────────────────────────────────────────────────────── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: var(--space-2); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+.grid { display: grid; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+/* ─── Premium Glass Panels ──────────────────────────────────────────────────── */
+.glass-panel {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: var(--color-bg-glass-heavy);
+}
+
+/* ─── App Safe Areas ────────────────────────────────────────────────────────── */
+.app-container {
+  min-height: 100vh;
+  padding: 0 var(--space-5);
+  padding-top: max(var(--space-6), env(safe-area-inset-top));
+  padding-bottom: max(100px, env(safe-area-inset-bottom)); /* Leave space for bottom nav */
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-spring);
+  white-space: nowrap;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.btn-primary {
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover, .btn-primary:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:active { 
+  transform: translateY(2px) scale(0.98); 
+  box-shadow: none;
+}
+
+.btn-solid {
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.btn-solid:hover, .btn-solid:focus-visible {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+}
+
+.btn-solid:active { 
+  transform: translateY(2px) scale(0.98); 
+}
+
+/* Float style buttons (like icons) */
+.btn-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-spring);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-icon:active {
+  transform: scale(0.9);
+}
+
+/* ─── Animated background ──────────────────────────────────────────────── */
+/* Soft gradient blobs matching the pastel vibe */
+.bg-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.bg-blob-1, .bg-blob-2 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+}
+
+.bg-blob-1 {
+  background: var(--color-primary-dim);
+  width: 80vw;
+  height: 80vw;
+  max-width: 400px;
+  max-height: 400px;
+  top: -10vw;
+  right: -10vw;
+  animation: float-1 20s ease-in-out infinite alternate;
+}
+
+.bg-blob-2 {
+  background: var(--color-accent-dim);
+  width: 70vw;
+  height: 70vw;
+  max-width: 350px;
+  max-height: 350px;
+  bottom: 10vh;
+  left: -20vw;
+  animation: float-2 25s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes float-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-50px, 100px) scale(1.1); }
+}
+
+@keyframes float-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(100px, -50px) scale(1.2); }
+}
+
+/* Hide decorative blobs on desktop — clean editorial feel */
+@media (min-width: 1024px) {
+  .bg-ambient { display: none; }
+}
+
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 0px; background: transparent; }
+
+/* ─── Animations ─────────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-up   { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-in   { animation: fadeIn 0.6s ease both; }
+
+/* Stagger helpers */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* ─── Reduced Motion ─────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .bg-blob-1,
+  .bg-blob-2 {
+    animation: none !important;
+  }
+}
+
+/* ─── View Transitions ───────────────────────────────────────────────────────── */
+
+/*
+ * HOW THE SIDEBAR MORPH WORKS
+ * ────────────────────────────
+ * Both pages give their <aside> the same view-transition-name: 'main-sidebar'.
+ * The browser takes a screenshot of the old state and a live capture of the new
+ * state, then interpolates the bounding boxes (width, height, position) via FLIP.
+ *
+ * CSS pseudo-elements (hierarchy):
+ *   ::view-transition-group           — the viewport overlay
+ *     ::view-transition-image-pair    — interpolates geometry (size + position)
+ *       ::view-transition-old         — screenshot of old element
+ *       ::view-transition-new         — live render of new element
+ *
+ * We control geometry via image-pair and content via old/new.
+ */
+
+/* ── Page-level crossfade (everything except the sidebar) ── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Sidebar: geometry morph (THE width grow/shrink) ── */
+::view-transition-image-pair(main-sidebar) {
+  /* The browser uses FLIP to animate width from 64px → 260px (or back).
+     Expo-out easing: fast start, silky settle. */
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Prevent clipping during the width expansion */
+  overflow: clip;
+}
+
+/* ── Old sidebar content: fade out fast so the morph is clean ── */
+::view-transition-old(main-sidebar) {
+  animation-name: vt-sidebar-out;
+  animation-duration: 130ms;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+
+/* ── New sidebar content: fade in after geometry settles ── */
+::view-transition-new(main-sidebar) {
+  animation-name: vt-sidebar-in;
+  animation-duration: 260ms;
+  animation-delay: 160ms;
+  animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes vt-sidebar-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes vt-sidebar-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Accessibility ── */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-old(main-sidebar),
+  ::view-transition-new(main-sidebar),
+  ::view-transition-image-pair(main-sidebar) {
+    animation-duration: 0.01ms !important;
+  }
+}

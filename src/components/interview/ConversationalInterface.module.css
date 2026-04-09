@@ -1,0 +1,155 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.chatLog {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--surface-100);
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+
+.message {
+  max-width: 80%;
+  padding: 1rem;
+  border-radius: 12px;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.msguser {
+  align-self: flex-end;
+  background: var(--primary-100);
+  color: var(--primary-900);
+  border-bottom-right-radius: 4px;
+}
+
+.msgassistant {
+  align-self: flex-start;
+  background: var(--surface-200);
+  color: var(--text-primary);
+  border-bottom-left-radius: 4px;
+}
+
+.msgsystem {
+  align-self: center;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  background: transparent;
+  padding: 0.5rem;
+}
+
+.speakerName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statusText {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  min-height: 1.5rem;
+}
+
+.pulsing {
+  animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btnPrimary {
+  padding: 0.875rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background: var(--primary-600);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 160px;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btnRecording {
+  background: var(--danger, #ef4444);
+  animation: pulse 2s infinite;
+}
+
+.btnRecording:hover:not(:disabled) {
+  background: var(--danger-dark, #dc2626);
+}
+
+.btnSecondary {
+  padding: 0.875rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-main);
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnSecondary:hover:not(:disabled) {
+  background: var(--surface-100);
+}
+
+.error {
+  color: var(--danger, #ef4444);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.waveformWrap {
+  width: 100%;
+  max-width: 300px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,4 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpeakDennis
+
+SpeakDennis is a comprehensive practice suite and dashboard designed for public speakers, job seekers, and content creators. It provides an interactive space to hone your speaking skills and manage your content strategy.
+
+## What This Solves
+
+Public speaking and job interviews require consistent practice, while content creation demands staying updated on industry trends. SpeakDennis solves these challenges by combining:
+
+- **Impromptu Speaking Practice:** An interactive "Impromptu Challenge" mode where users practice speaking based on random topic prompts (choose between one word, two words, or a full sentence) along with a dice-roll mechanic that determines the speaking duration. This builds quick-thinking and improvisation skills.
+- **Conversational AI Interview Mode:** A mock interview environment featuring a conversational AI. It uses the Speechify API to provide high-quality text-to-speech audio, alongside a character-based chat UI that displays meeting transcripts so users can review and evaluate their performance.
+- **Content Creator Dashboard:** A dedicated space for content creators to gain competitive insights. It includes an Instagram competitor tracking module and an RSS-based content idea generator to help creators plan out their next big piece of content.
+
+## What I Learned
+
+Building this project provided extensive hands-on experience across multiple domains:
+
+- **API Integration & Text-to-Speech:** Integrating the Speechify API to generate natural, high-quality audio for the AI interviewer.
+- **Third-Party Auth & Graph APIs:** Setting up the Meta Developers dashboard, handling account linking, and configuring the Instagram Graph API to retrieve competitor data.
+- **Modern Frontend Architecture:** Utilizing Next.js, React, TypeScript, and Tailwind CSS to create a premium, modular user interface.
+- **State Management:** Leveraging Redux Toolkit to manage complex UI states, such as tracking the conversation history in the interview mode and the active status of dashboard modules.
+- **Dynamic UI/UX:** Implementing interactive features like the randomized dice roll and dynamically generating character-based chat bubbles for interview transcripts.
+
+## Future Features
+
+The roadmap for SpeakDennis includes:
+
+- **Live Data Integration:** Transitioning the Content Creator Dashboard from mock data to real-time live API feeds.
+- **Advanced Performance Analytics:** Implementing AI-driven analysis of interview transcripts to detect filler words, measure speaking pace, and perform sentiment analysis.
+- **Expanded AI Personas:** Adding more diverse and customizable AI interviewer personas tailored for specific industries or roles.
+- **Multi-Platform Tracking:** Extending the competitor tracking module to support additional platforms like YouTube, LinkedIn, and TikTok. 
+- **User Authentication:** Implementing full user accounts to save practice history, track progress over time, and persist dashboard settings.
 
 ## Getting Started
 
@@ -14,23 +44,4 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.

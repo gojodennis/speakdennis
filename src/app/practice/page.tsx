@@ -61,6 +61,7 @@ export default function PracticePage() {
   const [targetTime, setTargetTime] = useState<number | null>(null);
   const [diceValue, setDiceValue] = useState<number | string>('🎲');
   const [isDiceRolling, setIsDiceRolling] = useState(false);
+  const [isGeneratingTopic, setIsGeneratingTopic] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackResult | null>(null);
   const [transcript, setTranscript] = useState('');
   const [processingError, setProcessingError] = useState<string | null>(null);
@@ -70,10 +71,11 @@ export default function PracticePage() {
 
   const selectScenario = (s: Scenario) => {
     setScenario(s);
-    setPrompt(getRandomPrompt(s));
+    setPrompt(s.id === 'impromptu' ? 'Select a challenge type below to generate your topic.' : getRandomPrompt(s));
     setTargetTime(null);
     setDiceValue('🎲');
     setIsDiceRolling(false);
+    setIsGeneratingTopic(false);
     setStage('record');
     recorder.reset();
   };
@@ -93,6 +95,30 @@ export default function PracticePage() {
       }
     }, 80);
   }, []);
+
+  const startImpromptuChallenge = useCallback(async (type: 'one_word' | 'two_word' | 'one_sentence') => {
+    setIsGeneratingTopic(true);
+    setPrompt('Generating your topic with LLaMA-3.1-8B...');
+    rollDice();
+
+    try {
+      const res = await fetch('/api/impromptu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPrompt(data.topic);
+      } else {
+        setPrompt("Fail to generate topic. Talk about artificial intelligence.");
+      }
+    } catch (e) {
+      setPrompt("Fail to generate topic. Talk about your favorite hobby.");
+    } finally {
+      setIsGeneratingTopic(false);
+    }
+  }, [rollDice]);
 
   const markStep = useCallback((idx: number, done: boolean, active: boolean) => {
     setSteps((prev) =>
@@ -253,6 +279,7 @@ export default function PracticePage() {
     setTargetTime(null);
     setDiceValue('🎲');
     setIsDiceRolling(false);
+    setIsGeneratingTopic(false);
     processingRef.current = false;
     setStage('select');
   };
@@ -266,6 +293,7 @@ export default function PracticePage() {
     if (scenario?.id !== 'impromptu') {
       setTargetTime(null);
     }
+    setIsGeneratingTopic(false);
     processingRef.current = false;
     setStage('record');
   };
@@ -391,11 +419,11 @@ export default function PracticePage() {
                 <div className={styles.promptCard}>
                   <div className={styles.promptHeaderRow}>
                     <span className={styles.promptEyebrow}>Your prompt</span>
-                    {scenario.id === 'impromptu' && targetTime && (
+                    {scenario.id === 'impromptu' && targetTime && !isGeneratingTopic && (
                       <span className={styles.targetTimeBadge}>🎯 Target: {targetTime} min{targetTime > 1 ? 's' : ''}</span>
                     )}
                   </div>
-                  <p className={styles.promptText}>&ldquo;{prompt}&rdquo;</p>
+                  <p className={styles.promptText}>{prompt.startsWith('Select') || prompt.startsWith('Generating') ? prompt : `"${prompt}"`}</p>
                   
                   {scenario.id !== 'impromptu' && (
                     <button
@@ -408,15 +436,27 @@ export default function PracticePage() {
                   )}
                 </div>
 
-                {scenario.id === 'impromptu' && targetTime === null ? (
+                {scenario.id === 'impromptu' && (targetTime === null || isGeneratingTopic) ? (
                   <div className={styles.diceBlock}>
-                    <div className={`${styles.diceVisual} ${isDiceRolling ? styles.rolling : ''}`}>
-                      {diceValue}
-                    </div>
-                    <p className={styles.diceText}>Roll the dice to determine your speaking time limit for this impromptu challenge.</p>
-                    <button className={`${styles.actionBtn} ${styles.btnPrimary}`} onClick={rollDice} disabled={isDiceRolling}>
-                      {isDiceRolling ? 'Rolling...' : 'Roll Dice'}
-                    </button>
+                    {(!isDiceRolling && !isGeneratingTopic && targetTime === null) ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', alignItems: 'center', width: '100%' }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-1)'}}>Choose your challenge:</h3>
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                          <button className={`${styles.actionBtn} ${styles.btnOutline}`} onClick={() => startImpromptuChallenge('one_word')} style={{ flex: '1 1 120px' }}>One Word</button>
+                          <button className={`${styles.actionBtn} ${styles.btnOutline}`} onClick={() => startImpromptuChallenge('two_word')} style={{ flex: '1 1 120px' }}>Two Words</button>
+                          <button className={`${styles.actionBtn} ${styles.btnOutline}`} onClick={() => startImpromptuChallenge('one_sentence')} style={{ flex: '1 1 150px' }}>One Sentence</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className={`${styles.diceVisual} ${isDiceRolling ? styles.rolling : ''}`}>
+                          {diceValue}
+                        </div>
+                        <p className={styles.diceText}>
+                          {isGeneratingTopic ? "Generating your topic and rolling the dice..." : "Rolling the dice to determine your speaking time..."}
+                        </p>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <>

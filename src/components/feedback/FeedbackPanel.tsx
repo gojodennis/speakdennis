@@ -191,7 +191,7 @@ export default function FeedbackPanel({ feedback, transcript }: FeedbackPanelPro
               <div className="filler-chips">
                 {feedback.filler_words.fillers.map((f, i) => (
                   <span key={i} className="filler-chip">
-                    "{f.word}" <strong>×{f.count}</strong>
+                    &quot;{f.word}&quot; <strong>×{f.count}</strong>
                   </span>
                 ))}
               </div>
@@ -213,9 +213,9 @@ export default function FeedbackPanel({ feedback, transcript }: FeedbackPanelPro
               <ul className="issue-list">
                 {feedback.grammar.issues.map((issue, i) => (
                   <li key={i} className="issue-item">
-                    <span className="issue-original">"{issue.original}"</span>
+                    <span className="issue-original">&quot;{issue.original}&quot;</span>
                     <span className="issue-arrow">→</span>
-                    <span className="issue-fix">"{issue.correction}"</span>
+                    <span className="issue-fix">&quot;{issue.correction}&quot;</span>
                     {issue.rule && <span className="issue-rule">{issue.rule}</span>}
                   </li>
                 ))}
@@ -605,7 +605,7 @@ function PronunciationTranscript({
         onClick={() => setActiveFlag(0)}
         aria-label="Start correcting pronunciation errors"
       >
-        Let's correct them →
+        Let&apos;s correct them →
       </button>
     </div>
   );

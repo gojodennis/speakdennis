@@ -1,180 +1,392 @@
 'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getSessions, getStats, type SessionStats } from '@/lib/storage/sessions';
-import type { PracticeSession } from '@/lib/ai/feedback-schema';
+import styles from './page.module.css';
 
-export default function DashboardPage() {
-  const [sessions, setSessions] = useState<PracticeSession[]>([]);
-  const [stats, setStats] = useState<SessionStats | null>(null);
+// ─── SVG Icons ────────────────────────────────────────────────────────────────
+const I = {
+  home: (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  ),
+  book: (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+    </svg>
+  ),
+  chart: (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+    </svg>
+  ),
+  user: (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+    </svg>
+  ),
+  mic: (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+      <line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+    </svg>
+  ),
+  bell: (
+    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  ),
+  search: (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  ),
+  settings: (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  ),
+  arrow: (
+    <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+    </svg>
+  ),
+  fire: (
+    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+    </svg>
+  ),
+};
 
-  useEffect(() => {
-    setSessions(getSessions());
-    setStats(getStats());
-  }, []);
+// ─── Data ─────────────────────────────────────────────────────────────────────
+const SCENARIOS = [
+  { label: 'Job Interview',  sub: 'Tech & behavioural Q&A',    tag: 'Intermediate', color: '#dd7230' },
+  { label: 'Coffee Shop',   sub: 'Casual everyday chat',       tag: 'Beginner',     color: '#854d27' },
+  { label: 'Presentation',  sub: 'Structured public speaking', tag: 'Advanced',     color: '#2e1f27' },
+  { label: 'First Date',    sub: 'Light conversational flow',  tag: 'Beginner',     color: '#854d27' },
+];
 
-  function scoreColor(s: number) {
-    if (s >= 85) return 'var(--color-success)';
-    if (s >= 65) return 'var(--color-primary)';
-    if (s >= 45) return 'var(--color-warning)';
-    return 'var(--color-error)';
-  }
+const ACTIVITY: { label: string; score: number; time: string }[] = [
+  { label: 'Coffee Shop Practice', score: 92, time: '2h ago'    },
+  { label: 'Job Interview Run',    score: 78, time: 'Yesterday' },
+  { label: 'Pronunciation Drill',  score: 88, time: '2 days ago'},
+];
 
-  function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  }
+// normalize: map score to semantic data-score value
+function scoreGrade(score: number): 'high' | 'mid' | 'low' {
+  if (score >= 90) return 'high';
+  if (score >= 80) return 'mid';
+  return 'low';
+}
 
+// Week bar data: values for M-S; 0 = today or future
+const WEEK_BARS = [40, 65, 30, 80, 95, 50, 0];
+// Today is Saturday (index 5); Sunday (index 6) is future
+const FUTURE_FROM = 6;
+
+export default function Dashboard() {
   return (
-    <main className="dashboard-page">
-      <div className="glow-orb glow-orb-primary" style={{ top: '-80px', right: '10%' }} aria-hidden="true" />
+    <div className={styles.shell}>
+      {/* ── Sidebar (Desktop) / Bottom Nav (Mobile) ── */}
+      <aside className={styles.sidebar} aria-label="Main navigation">
+        <div className={styles.navTop}>
+          <div className={styles.navLogo} aria-hidden="true">{I.mic}</div>
+          <nav className={styles.navMenu} aria-label="Site sections">
+            {NAV.map(({ icon, label, active }) => (
+              <button
+                key={label}
+                className={`${styles.navBtn}${active ? ' ' + styles.active : ''}`}
+                aria-label={label}
+                aria-current={active ? 'page' : undefined}
+              >
+                {icon}
+                <span className={styles.navLabel}>{label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+        
+        <div className={styles.navFoot}>
+          <button className={`${styles.navBtn} ${styles.hideMobile}`} aria-label="Settings">
+            {I.settings}
+          </button>
+          <div className={`${styles.avatar} ${styles.hideMobile}`} role="img" aria-label="Your profile">D</div>
+        </div>
+      </aside>
 
-      <div className="container">
-        {/* Header */}
-        <header className="dash-header">
-          <div>
-            <h1 className="dash-title">Your Progress</h1>
-            <p className="dash-subtitle">Track your speaking improvement over time</p>
+      {/* ── Main content column ── */}
+      <div className={styles.main}>
+
+        {/* Topbar */}
+        <header className={styles.topbar}>
+          {/* Mobile Topbar Left: Greeting */}
+          <div className={styles.mobileGreetingBox}>
+            <p className={styles.greetingSub}>Ready to practise,</p>
+            <h1 className={styles.greeting}>Dennis</h1>
           </div>
-          <Link href="/practice" className="btn btn-primary">
-            🎙️ Practice Now
-          </Link>
+
+          {/* Desktop Topbar Left: Search */}
+          <div className={styles.searchBox} role="search">
+            {I.search}
+            <input
+              placeholder="Search scenarios…"
+              className={styles.searchInput}
+              aria-label="Search scenarios"
+              type="search"
+            />
+          </div>
+
+          {/* Topbar Right: Actions */}
+          <div className={styles.topbarActions}>
+            <button className={`${styles.iconBtn} ${styles.mobileSearchBtn}`} aria-label="Search">
+              {I.search}
+            </button>
+            <button className={styles.iconBtn} aria-label="Notifications">
+              {I.bell}
+              <span className={styles.notifBadge} aria-hidden="true" />
+            </button>
+            <div className={`${styles.userChip} ${styles.hideMobile}`} aria-label="Signed in as Dennis">
+              <div className={`${styles.avatar} ${styles.avatarSm}`} aria-hidden="true">D</div>
+              <span>Dennis</span>
+            </div>
+          </div>
         </header>
 
-        {sessions.length === 0 ? (
-          <div className="empty-state glass-card animate-fade-up">
-            <div className="empty-icon">🎤</div>
-            <h2>No sessions yet</h2>
-            <p>Complete your first practice session to start tracking your progress.</p>
-            <Link href="/practice" className="btn btn-primary">Start Practising</Link>
-          </div>
-        ) : (
-          <>
-            {/* Stats row */}
-            {stats && (
-              <div className="stats-grid animate-fade-up">
-                <StatCard icon="🏆" label="Best Score" value={String(stats.bestScore)} />
-                <StatCard icon="📈" label="Average Score" value={String(stats.averageScore)} />
-                <StatCard icon="🎯" label="Sessions" value={String(stats.totalSessions)} />
-                <StatCard icon="🔥" label="Day Streak" value={`${stats.streakDays}d`} />
-                {stats.mostPracticedScenario && (
-                  <StatCard icon="⭐" label="Top Scenario" value={stats.mostPracticedScenario} small />
-                )}
-              </div>
-            )}
+        {/* Page body */}
+        <main className={styles.body} id="main-content">
 
-            {/* Weekly trend */}
-            {stats && stats.weeklyScores.length > 1 && (
-              <div className="glass-card trend-card animate-fade-up delay-100">
-                <h2 className="section-heading">7-Day Trend</h2>
-                <div className="mini-chart">
-                  {stats.weeklyScores.map((ws, i) => (
-                    <div key={i} className="chart-bar-col">
-                      <div
-                        className="chart-bar"
-                        style={{
-                          height: `${ws.score}%`,
-                          background: scoreColor(ws.score),
-                        }}
-                        title={`${ws.date}: ${ws.score}`}
-                      />
-                      <span className="chart-label">{ws.date.slice(5)}</span>
+          {/* Desktop Only header */}
+          <div className={styles.desktopHeader}>
+            <div className={styles.greetingGroup}>
+              <p className={styles.greetingSub}>Ready to practise,</p>
+              <h1 className={styles.greeting}>Dennis</h1>
+            </div>
+            <Link href="/practice" className={styles.ctaBtnPrimary}>
+              {I.mic}
+              Start speaking · 15 min
+            </Link>
+          </div>
+
+          {/* Pill filter tabs */}
+          <div className={styles.filterTabs} role="tablist" aria-label="Filter by skill">
+            {['All', 'Speaking', 'Listening', 'Vocabulary'].map((t, i) => (
+              <button
+                key={t}
+                role="tab"
+                aria-selected={i === 0}
+                className={`${styles.tab}${i === 0 ? ' ' + styles.active : ''}`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile Only: Daily Goal highlights before the grid */}
+          <div className={`${styles.card} ${styles.goalCardMobile}`}>
+            <div className={styles.cardHeaderWrap}>
+              <span className={styles.goalEyebrow}>Daily Goal</span>
+              <span className={styles.streakBadgeInline} aria-label="3-day streak">
+                {I.fire} 3 days
+              </span>
+            </div>
+            <p className={styles.goalTextDark}>Speak for 15 minutes to build your streak</p>
+            <div className={styles.goalProgressTrack} role="progressbar" aria-valuenow={40} aria-valuemin={0} aria-valuemax={100} aria-label="Daily goal progress">
+              <div className={styles.goalProgressFill} style={{ transform: 'scaleX(0.4)' }} />
+            </div>
+            <div className={styles.goalFoot}>
+              <span className={styles.goalProgressLabelDarkMobile}>6 min done · 9 to go</span>
+              <Link href="/practice" className={styles.ctaBtnOutline}>
+                {I.mic} Begin session
+              </Link>
+            </div>
+          </div>
+
+          {/* Content grid */}
+          <div className={styles.grid}>
+
+            {/* ── Left column ── */}
+            <div className={styles.colLeft}>
+
+              {/* Progress summary card */}
+              <div className={`${styles.card} ${styles.progressCard}`}>
+                <div className={styles.cardHeader}>
+                  <span className={styles.cardTitle}>Today&apos;s progress</span>
+                  <span className={`${styles.streakBadgeOutline} ${styles.hideMobile}`} aria-label="3-day streak">
+                    {I.fire} 3-day streak
+                  </span>
+                </div>
+                
+                <div className={styles.statsRow}>
+                  <div className={styles.statWrapLeft}>
+                    <div className={styles.statBox}>
+                      <span className={styles.statN}>15<span className={`${styles.statU_inline} ${styles.hideMobile}`}>m</span></span>
+                      <span className={styles.statU}>goal today</span>
                     </div>
+                    <div className={styles.statDivider} aria-hidden="true" />
+                    <div className={styles.statBox}>
+                      <span className={styles.statN}>124</span>
+                      <span className={styles.statU}>words spoken</span>
+                    </div>
+                  </div>
+                  
+                  <div className={`${styles.statDivider} ${styles.hideMobile}`} aria-hidden="true" />
+                  
+                  <div className={styles.statWrapRight}>
+                    <div className={styles.statBox}>
+                      <span className={styles.statN}>84<span className={styles.statU_inline}>%</span></span>
+                      <span className={styles.statU}>accuracy</span>
+                    </div>
+                    <div className={styles.statDivider} aria-hidden="true" />
+                    <div className={styles.statBox}>
+                      <span className={styles.statN}>4.5<span className={styles.statU_inline}>h</span></span>
+                      <span className={styles.statU}>this week</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.weekChart} aria-label="Activity this week" role="img">
+                  {WEEK_BARS.map((h, i) => {
+                    const isFuture = i >= FUTURE_FROM;
+                    const scale = h / 100;
+                    return (
+                      <div key={i} className={styles.barCol}>
+                        <div
+                          className={`${styles.bar}${isFuture ? ' ' + styles.barFuture : ''}`}
+                          style={{ transform: `scaleY(${isFuture ? 0 : Math.max(scale, 0.03)})` }}
+                          aria-hidden="true"
+                        />
+                        <span className={`${styles.barDay}${isFuture ? ' ' + styles.barDayFuture : ''}`}>
+                          {'MTWTFSS'[i]}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Scenario list */}
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <div style={{display:'flex', flexDirection:'column'}}>
+                    <h2 className={styles.cardTitle}>Recommended scenarios</h2>
+                    <span className={`${styles.cardSubtitle} ${styles.hideDesktop}`}>Real-world conversations, graded by difficulty</span>
+                  </div>
+                  <button className={`${styles.textLink} ${styles.hideMobile}`} aria-label="View all scenarios">
+                    View all
+                  </button>
+                </div>
+                <div className={styles.scenarioList}>
+                  {SCENARIOS.map(({ label, sub, tag, color }) => (
+                    <button key={label} className={styles.scenarioRow} aria-label={`Start ${label} scenario — ${tag}`}>
+                      <div className={styles.scenarioDot} style={{ background: color }} aria-hidden="true" />
+                      <div className={styles.scenarioInfo}>
+                        <span className={styles.scenarioName}>{label}</span>
+                        <span className={styles.scenarioSub}>{sub}</span>
+                      </div>
+                      <span className={styles.tag}>{tag}</span>
+                      <span className={`${styles.scenarioArrow} ${styles.hideMobile}`} aria-hidden="true">{I.arrow}</span>
+                    </button>
                   ))}
                 </div>
               </div>
-            )}
 
-            {/* Session history */}
-            <div className="animate-fade-up delay-200">
-              <h2 className="section-heading">Session History</h2>
-              <div className="session-list">
-                {sessions.map((session) => (
-                  <div key={session.id} className="session-row glass-card">
-                    <div className="session-info">
-                      <span className="session-scenario">{session.scenarioName}</span>
-                      <span className="session-prompt">"{session.prompt}"</span>
-                      <span className="session-date">{formatDate(session.createdAt)}</span>
-                    </div>
-                    <div className="session-stats">
-                      <div className="session-score" style={{ color: scoreColor(session.feedback.overall.score) }}>
-                        {session.feedback.overall.score}
+              {/* Mobile-only recent activity embedded in left column */}
+              <div className={`${styles.card} ${styles.recentCardMobile}`}>
+                <div className={styles.cardHeader}>
+                  <span className={styles.cardTitle}>Recent sessions</span>
+                </div>
+                {ACTIVITY.length === 0 ? (
+                  <div className={styles.emptyState}>No sessions yet.<br />Start your first one above →</div>
+                ) : (
+                  <div className={styles.activityList}>
+                    {ACTIVITY.map(({ label, score, time }) => (
+                      <div key={label} className={styles.activityRow}>
+                        <div className={styles.activityInfo}>
+                          <span className={styles.activityName}>{label}</span>
+                          <span className={styles.activityTime}>{time}</span>
+                        </div>
+                        <span className={styles.scoreBadge} data-score={scoreGrade(score)} aria-label={`Score: ${score}%`}>
+                          {score}%
+                        </span>
                       </div>
-                      <div className="session-label">{session.feedback.overall.label}</div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
+
             </div>
-          </>
-        )}
+
+            {/* ── Right column (Desktop only via CSS Grid config) ── */}
+            <div className={styles.colRight}>
+
+              {/* Daily goal highlight card */}
+              <div className={`${styles.card} ${styles.goalCardDesktop}`}>
+                <span className={styles.goalEyebrow}>Daily goal</span>
+                <p className={styles.goalTextDark}>Speak for 15 minutes to build your streak</p>
+                <div className={styles.goalProgressTrack} role="progressbar" aria-valuenow={40} aria-valuemin={0} aria-valuemax={100} aria-label="Daily goal progress">
+                  <div className={styles.goalProgressFill} style={{ transform: 'scaleX(0.4)' }} />
+                </div>
+                <span className={styles.goalProgressLabelDark}>6 min completed · 9 to go</span>
+              </div>
+
+              {/* Recent activity */}
+              <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <span className={styles.cardTitle}>Recent sessions</span>
+                </div>
+                {ACTIVITY.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    No sessions yet.<br />Start your first one above →
+                  </div>
+                ) : (
+                  <div className={styles.activityList}>
+                    {ACTIVITY.map(({ label, score, time }) => (
+                      <div key={label} className={styles.activityRow}>
+                        <div className={styles.activityInfo}>
+                          <span className={styles.activityName}>{label}</span>
+                          <span className={styles.activityTime}>{time}</span>
+                        </div>
+                        <span className={styles.scoreBadge} data-score={scoreGrade(score)} aria-label={`Score: ${score}%`}>
+                          {score}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Grade card */}
+              <div className={`${styles.card} ${styles.gradeCard}`}>
+                <div className={styles.gradeInner}>
+                  <div>
+                    <div className={styles.gradeLabel}>Pronunciation grade</div>
+                    <div className={styles.gradeValue} aria-label="Grade: A minus">A−</div>
+                    <div className={styles.gradeSubLabel}>Based on last 3 sessions</div>
+                  </div>
+                  <div className={styles.gradeRing} aria-hidden="true">
+                    <svg width={72} height={72} role="presentation">
+                      <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(221,114,48,0.12)" strokeWidth="6" />
+                      <circle cx="36" cy="36" r="30" fill="none" stroke="#dd7230" strokeWidth="6"
+                        strokeDasharray={`${0.84 * 2 * Math.PI * 30} ${2 * Math.PI * 30}`}
+                        strokeLinecap="round"
+                        transform="rotate(-90 36 36)"
+                      />
+                    </svg>
+                    <span className={styles.gradeRingPct}>84%</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+          <div className={styles.safeBottomInset} aria-hidden="true" />
+        </main>
       </div>
-
-      <style>{`
-        .dashboard-page { min-height: 100vh; padding: var(--space-8) 0 var(--space-16); position: relative; }
-        .dash-header {
-          display: flex; align-items: flex-start; justify-content: space-between;
-          margin-bottom: var(--space-10); gap: var(--space-4); flex-wrap: wrap;
-        }
-        .dash-title { margin-bottom: var(--space-2); }
-        .dash-subtitle { color: var(--color-text-muted); max-width: none; }
-
-        /* Stats */
-        .stats-grid {
-          display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-          gap: var(--space-4); margin-bottom: var(--space-6);
-        }
-        .stat-card {
-          background: var(--color-bg-glass); backdrop-filter: blur(20px);
-          border: 1px solid var(--color-border); border-radius: var(--radius-xl);
-          padding: var(--space-5) var(--space-4);
-          display: flex; flex-direction: column; gap: var(--space-2);
-        }
-        .stat-icon { font-size: 1.25rem; }
-        .stat-label { font-size: 0.75rem; color: var(--color-text-subtle); text-transform: uppercase; letter-spacing: 0.06em; }
-        .stat-value { font-size: 1.75rem; font-weight: 800; font-family: var(--font-heading); color: var(--color-text); }
-        .stat-value-sm { font-size: 1rem; }
-
-        /* Trend chart */
-        .trend-card { margin-bottom: var(--space-6); }
-        .section-heading { font-size: 1rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: var(--space-4); text-transform: uppercase; letter-spacing: 0.06em; }
-        .mini-chart {
-          display: flex; align-items: flex-end; gap: var(--space-2);
-          height: 100px;
-        }
-        .chart-bar-col { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); flex: 1; height: 100%; justify-content: flex-end; }
-        .chart-bar { width: 100%; border-radius: var(--radius-sm) var(--radius-sm) 0 0; min-height: 4px; transition: height 0.5s ease; }
-        .chart-label { font-size: 0.65rem; color: var(--color-text-subtle); }
-
-        /* Session list */
-        .session-list { display: flex; flex-direction: column; gap: var(--space-3); }
-        .session-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
-        .session-info { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; min-width: 0; }
-        .session-scenario { font-weight: 600; font-size: 0.9rem; color: var(--color-text); }
-        .session-prompt { font-size: 0.8rem; color: var(--color-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .session-date { font-size: 0.75rem; color: var(--color-text-subtle); }
-        .session-stats { text-align: right; flex-shrink: 0; }
-        .session-score { font-size: 1.75rem; font-weight: 900; font-family: var(--font-heading); }
-        .session-label { font-size: 0.7rem; color: var(--color-text-subtle); text-transform: capitalize; margin-top: -2px; }
-
-        /* Empty */
-        .empty-state {
-          display: flex; flex-direction: column; align-items: center; gap: var(--space-4);
-          padding: var(--space-16) var(--space-8); text-align: center; margin-top: var(--space-8);
-        }
-        .empty-icon { font-size: 3rem; }
-        .empty-state p { max-width: 36ch; }
-      `}</style>
-    </main>
-  );
-}
-
-function StatCard({ icon, label, value, small }: { icon: string; label: string; value: string; small?: boolean }) {
-  return (
-    <div className="stat-card">
-      <span className="stat-icon">{icon}</span>
-      <span className="stat-label">{label}</span>
-      <span className={`stat-value ${small ? 'stat-value-sm' : ''}`}>{value}</span>
     </div>
   );
 }

@@ -65,8 +65,8 @@ export default function ConversationalInterface({
         const reply = data.reply;
         setMessages([...initMessages, { role: 'assistant', content: reply }]);
         speakText(reply);
-      } catch (err: any) {
-        setErrorMsg(err.message || 'Failed to connect.');
+      } catch (err: unknown) {
+        setErrorMsg((err as Error).message || 'Failed to connect.');
       } finally {
         setIsProcessing(false);
       }
@@ -150,8 +150,8 @@ export default function ConversationalInterface({
       setMessages([...newHistory, { role: 'assistant', content: reply }]);
       speakText(reply);
 
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error processing response.');
+    } catch (err: unknown) {
+      setErrorMsg((err as Error).message || 'Error processing response.');
     } finally {
       setIsProcessing(false);
       recorder.reset();

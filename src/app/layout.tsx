@@ -15,7 +15,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: 'SpeakDennis',
+  title: 'Kaizen',
   description: 'Cozy, premium AI language practice environment.',
 };
 

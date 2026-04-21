@@ -1,10 +1,10 @@
-# SpeakDennis
+# Kaizen
 
-SpeakDennis is a comprehensive practice suite designed for public speakers and job seekers. It provides an interactive space to hone your impromptu speaking skills and practice for interviews.
+Kaizen is a comprehensive practice suite designed for public speakers and job seekers. It provides an interactive space to hone your impromptu speaking skills and practice for interviews.
 
 ## What This Solves
 
-Public speaking and job interviews require consistent practice to build confidence and fluency. SpeakDennis solves these challenges by combining:
+Public speaking and job interviews require consistent practice to build confidence and fluency. Kaizen solves these challenges by combining:
 
 - **Impromptu Speaking Practice:** An interactive "Impromptu Challenge" mode where users practice speaking based on random topic prompts (choose between one word, two words, or a full sentence) along with a dice-roll mechanic that determines the speaking duration. This builds quick-thinking and improvisation skills.
 - **Conversational AI Interview Mode:** A mock interview environment featuring a conversational AI. It uses the Speechify API to provide high-quality text-to-speech audio, alongside a character-based chat UI that displays meeting transcripts so users can review and evaluate their performance.
@@ -20,7 +20,7 @@ Building this project provided extensive hands-on experience across multiple dom
 
 ## Future Features
 
-The roadmap for SpeakDennis includes:
+The roadmap for Kaizen includes:
 
 - **Advanced Performance Analytics:** Implementing AI-driven analysis of interview transcripts to detect filler words, measure speaking pace, and perform sentiment analysis.
 - **Expanded AI Personas:** Adding more diverse and customizable AI interviewer personas tailored for specific industries or roles.

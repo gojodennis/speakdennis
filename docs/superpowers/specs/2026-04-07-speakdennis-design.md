@@ -1,13 +1,13 @@
-# SpeakDennis Design Specification
+# Kaizen Design Specification
 
-**Project:** SpeakDennis - AI-Powered Speech Improvement Platform  
+**Project:** Kaizen - AI-Powered Speech Improvement Platform  
 **Date:** 2026-04-07  
 **Target Audience:** General Public  
 **Language Support:** English Only (Initial MVP)
 
 ## Executive Summary
 
-SpeakDennis is a web-based platform that helps users improve their speaking skills through real-time AI feedback and scenario-based practice. The platform differentiates itself by focusing on impromptu speaking scenarios with instant, comprehensive feedback across multiple speech dimensions.
+Kaizen is a web-based platform that helps users improve their speaking skills through real-time AI feedback and scenario-based practice. The platform differentiates itself by focusing on impromptu speaking scenarios with instant, comprehensive feedback across multiple speech dimensions.
 
 ## Core Features
 

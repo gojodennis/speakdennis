@@ -1,6 +1,6 @@
 import type { PracticeSession } from '@/lib/ai/feedback-schema';
 
-const STORAGE_KEY = 'speakdennis_sessions';
+const STORAGE_KEY = 'kaizen_sessions';
 const MAX_SESSIONS = 100;
 
 function readAll(): PracticeSession[] {

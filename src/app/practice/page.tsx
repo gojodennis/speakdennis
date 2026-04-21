@@ -113,7 +113,7 @@ export default function PracticePage() {
       } else {
         setPrompt("Fail to generate topic. Talk about artificial intelligence.");
       }
-    } catch (e) {
+    } catch {
       setPrompt("Fail to generate topic. Talk about your favorite hobby.");
     } finally {
       setIsGeneratingTopic(false);
@@ -195,7 +195,7 @@ export default function PracticePage() {
         processingRef.current = false;
       }
     },
-    [markStep],
+    [markStep, targetTime],
   );
 
   const processConversationalAudio = useCallback(
@@ -396,7 +396,7 @@ export default function PracticePage() {
           <div className={styles.contentWrap}>
             <div className={styles.sectionHead}>
               <h2 className={styles.sectionTitle}>Choose a scenario</h2>
-              <p className={styles.sectionSub}>Pick a practice context. You'll receive AI feedback on 6 speech dimensions.</p>
+              <p className={styles.sectionSub}>Pick a practice context. You&apos;ll receive AI feedback on 6 speech dimensions.</p>
             </div>
             <div className={styles.scenarioList}>
               {SCENARIOS.map((s) => (

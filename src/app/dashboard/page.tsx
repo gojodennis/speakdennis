@@ -88,6 +88,13 @@ const WEEK_BARS = [40, 65, 30, 80, 95, 50, 0];
 // Today is Saturday (index 5); Sunday (index 6) is future
 const FUTURE_FROM = 6;
 
+const NAV = [
+  { icon: I.home, label: 'Home', active: true },
+  { icon: I.book, label: 'Practice', active: false },
+  { icon: I.chart, label: 'Analytics', active: false },
+  { icon: I.user, label: 'Profile', active: false },
+];
+
 export default function Dashboard() {
   return (
     <div className={styles.shell}>
